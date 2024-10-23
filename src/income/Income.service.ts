@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Income, IncomeDocument } from './schemas/income.schema';
+import { getSummary } from '../common/utils/summary.utils';
 
 @Injectable()
 export class IncomeService {
@@ -61,16 +62,5 @@ export class IncomeService {
   }
 
   async getIncomeSummary(userId: string, period: 'today' | 'week' | 'month' | 'year') {
-    const matchCriteria = this.getMatchCriteria(period, userId);
-    
-    return this.incomeModel.aggregate([
-      { $match: matchCriteria },
-      {
-        $group: {
-          _id: null,
-          totalAmount: { $sum: '$amount' },
-        },
-      },
-    ]);
+    return getSummary(this.incomeModel, userId, period);
   }
-}
