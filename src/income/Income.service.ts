@@ -59,4 +59,18 @@ export class IncomeService {
       throw new NotFoundException('Income not found.');
     }
   }
+
+  async getIncomeSummary(userId: string, period: 'today' | 'week' | 'month' | 'year') {
+    const matchCriteria = this.getMatchCriteria(period, userId);
+    
+    return this.incomeModel.aggregate([
+      { $match: matchCriteria },
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: '$amount' },
+        },
+      },
+    ]);
+  }
 }
