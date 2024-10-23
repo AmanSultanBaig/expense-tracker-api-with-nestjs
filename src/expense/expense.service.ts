@@ -60,3 +60,17 @@ export class ExpenseService {
     }
   }
 }
+
+async getExpenseSummary(userId: string, period: 'today' | 'week' | 'month' | 'year') {
+  const matchCriteria = this.getMatchCriteria(period, userId);
+    
+  return this.expenseModel.aggregate([
+    { $match: matchCriteria },
+    {
+      $group: {
+        _id: null,
+        totalAmount: { $sum: '$amount' },
+      },
+    },
+  ]);
+}
