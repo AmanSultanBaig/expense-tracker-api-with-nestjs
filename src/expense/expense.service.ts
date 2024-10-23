@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Expense, ExpenseDocument } from './schemas/expense.schema';
+import { getSummary } from '../common/utils/summary.utils';
 
 @Injectable()
 export class ExpenseService {
@@ -62,15 +63,5 @@ export class ExpenseService {
 }
 
 async getExpenseSummary(userId: string, period: 'today' | 'week' | 'month' | 'year') {
-  const matchCriteria = this.getMatchCriteria(period, userId);
-    
-  return this.expenseModel.aggregate([
-    { $match: matchCriteria },
-    {
-      $group: {
-        _id: null,
-        totalAmount: { $sum: '$amount' },
-      },
-    },
-  ]);
+  return getSummary(this.expenseModel, userId, period);
 }
