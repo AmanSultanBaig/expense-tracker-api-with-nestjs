@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards, Req } from '@nestjs/common';
 import { IncomeService } from './income.service';
+// import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Income } from './schemas/income.schema';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
@@ -66,5 +67,15 @@ export class IncomeController {
   @Delete(':id')
   async deleteIncome(@Param('id') id: string): Promise<void> {
     return this.incomeService.deleteIncome(id);
+  }
+
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(AuthGuard('jwt'))
+  @Get('summary/:period')
+  async getIncomeSummary(
+    @Param('period') period: 'today' | 'week' | 'month' | 'year',
+    @Param('userId') userId: string,
+  ) {
+    return this.incomeService.getIncomeSummary(userId, period);
   }
 }
