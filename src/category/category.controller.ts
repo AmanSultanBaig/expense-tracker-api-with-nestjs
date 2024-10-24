@@ -1,13 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { Category } from './schemas/category.schema';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('categories')
 @Controller('categories')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
-
+  
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(AuthGuard('jwt'))
   @Post()
   @ApiOperation({ summary: 'Create a new category' })
   @ApiBody({
@@ -26,6 +29,8 @@ export class CategoryController {
     return this.categoryService.createCategory(name, req.user._id); 
   }
 
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   @ApiOperation({ summary: 'Get all categories' })
   @ApiResponse({ status: 200, description: 'Returns a list of categories.', type: [Category] })
@@ -33,6 +38,8 @@ export class CategoryController {
     return this.categoryService.getAllCategories(req.user._id);
   }
 
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   @ApiOperation({ summary: 'Get a specific category by ID' })
   @ApiParam({ name: 'id', required: true, description: 'Category ID' })
@@ -41,6 +48,8 @@ export class CategoryController {
     return this.categoryService.getCategoryById(id);
   }
 
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(AuthGuard('jwt'))
   @Put(':id')
   @ApiOperation({ summary: 'Update a category by ID' })
   @ApiParam({ name: 'id', required: true, description: 'Category ID' })
@@ -53,6 +62,8 @@ export class CategoryController {
     return this.categoryService.updateCategory(id, updateData);
   }
 
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a category by ID' })
   @ApiParam({ name: 'id', required: true, description: 'Category ID' })
