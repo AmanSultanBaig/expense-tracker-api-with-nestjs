@@ -1,5 +1,6 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards, Req, ParseUUIDPipe } from '@nestjs/common';
 import { ExpenseService } from './expense.service';
+// import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Expense } from './schemas/expense.schema';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Category } from 'src/category/schemas/category.schema';
@@ -8,6 +9,7 @@ import { AuthGuard } from '@nestjs/passport';
 @ApiTags('expenses')
 @Controller('expenses')
 export class ExpenseController {
+  incomeService: any;
   constructor(private readonly expenseService: ExpenseService) {}
 
   @ApiBearerAuth('JWT-auth')
@@ -67,5 +69,15 @@ export class ExpenseController {
   @Delete(':id')
   async deleteExpense(@Param('id') id: string): Promise<void> {
     return this.expenseService.deleteExpense(id);
+  }
+
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(AuthGuard('jwt'))
+  @Get('summary/:period')
+  async getExpenseSummary(
+    @Param('period') period: 'today' | 'week' | 'month' | 'year',
+    @Param('userId') userId: string,
+  ) {
+    return this.expenseService.getExpenseSummary(userId, period);
   }
 }
