@@ -64,3 +64,4 @@ export class IncomeService {
   async getIncomeSummary(userId: string, period: 'today' | 'week' | 'month' | 'year') {
     return getSummary(this.incomeModel, userId, period);
   }
+}
