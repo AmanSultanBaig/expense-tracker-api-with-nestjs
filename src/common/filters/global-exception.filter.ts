@@ -1,12 +1,10 @@
-// src/common/filters/global-exception.filter.ts
-
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { Logger } from 'winston';  // Import Winston's Logger type
+import { Logger } from 'winston';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
-  constructor(private readonly logger: Logger) {} // Use Winston's Logger type
+  constructor(private readonly logger: Logger) {}
 
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
