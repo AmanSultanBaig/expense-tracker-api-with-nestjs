@@ -1,5 +1,3 @@
-// src/common/loggers/logger.ts
-
 import * as winston from 'winston';
 
 const logger = winston.createLogger({
@@ -18,4 +16,4 @@ const logger = winston.createLogger({
   ],
 });
 
-export default logger;  // Ensure you are using default export
+export default logger;
