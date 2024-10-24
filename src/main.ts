@@ -1,24 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { GlobalExceptionFilter } from './common/filter/global-exception.filter';
-import { WinstonModule } from 'nest-winston';
-import * as winston from 'winston';
+import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
+import logger from './common/loggers/logger';
 
 async function bootstrap() {
-
-  const logger = WinstonModule.createLogger({
-    transports: [
-      new winston.transports.Console({
-        format: winston.format.combine(
-          winston.format.timestamp(),
-          winston.format.json(),
-        ),
-      }),
-    ],
-  });
-
   const app = await NestFactory.create(AppModule);
+
+  app.useGlobalFilters(new GlobalExceptionFilter(logger));
 
   const config = new DocumentBuilder()
     .setTitle('Tracker API')
