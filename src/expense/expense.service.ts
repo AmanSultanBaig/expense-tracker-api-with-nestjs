@@ -60,8 +60,8 @@ export class ExpenseService {
       throw new NotFoundException('Expense not found.');
     }
   }
-}
 
-async getExpenseSummary(userId: string, period: 'today' | 'week' | 'month' | 'year') {
-  return getSummary(this.expenseModel, userId, period);
+  async getExpenseSummary(userId: string, period: 'today' | 'week' | 'month' | 'year') {
+    return getSummary(this.expenseModel, userId, period);
+  }
 }
